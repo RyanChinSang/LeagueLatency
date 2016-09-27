@@ -15,27 +15,29 @@ It is still simple! But not simple for everyone.
 3. Install Python:
     1. Run the installer when download completes.
         1. During installation:
-            1. If the **Open File - Security Warning** window pops-up, click **Run**
-            2. Verify you selected **Install for all users**, click **Next >**
-            3. Verify that under **Select Destination Directory** the directory stated is `C:\Python27\`, click **Next >**
-            4. Under **Customize Python 2.7.12** 
-                1. Scroll down to **Add python.exe to Path**
-                2. Click the red 'x' and select **Will be installed on local hard drive**
-                3. Click **Next >**
-        2. If you did not 'Add Python to Path' during installation:
-            1. Hold <kbd>Win</kbd> and press <kbd>R</kbd>.
-            2. Type `explorer` and press <kbd>Enter</kbd>
-            3. Right-click 'Computer' or 'My Computer' or 'This PC' in the Navigation Tree Panel on the left.
-            4. Select 'Properties' at the bottom of the Context Menu.
-            5. Select 'Advanced system settings'
-            6. Click 'Environment Variables...' in the Advanced Tab
-            7. Under 'System Variables':
-                1. Add
-                    * PY_HOME
-                    `C:\Python27`
-                    * PYTHONPATH
-                    `%PY_HOME%\Lib;%PY_HOME%\DLLs;%PY_HOME%\Lib\lib-tk;C:\another-library`
-                2. Append
-                    * Path
-                    `%PY_HOME%;%PY_HOME%\Scripts\`
+            1. If the **Open File - Security Warning** window pops-up, click **Run**.
+            2. Verify you selected **Install for all users**, click **Next**.
+            3. Verify that under **Select Destination Directory** the directory stated is `C:\Python27\`, click **Next**.
+            4. Under **Customize Python 2.7.12**.
+                1. Scroll down to **Add python.exe to Path**.
+                2. Click the red 'x' and select **Will be installed on local hard drive**.
+                3. Click **Next**.
+    2. If you did not **Add python.exe to Path** during installation:
+        1. Hold <kbd>Win</kbd> and press <kbd>R</kbd>.
+        2. Type `explorer` and press <kbd>Enter</kbd>.
+        3. Right-click **Computer** or **My Computer** or **This PC** in the <u>Navigation Tree Panel</u> on the left.
+        4. Select **Properties** at the bottom of the Context Menu.
+        5. Select **Advanced system settings**.
+        6. Click **Environment Variables...** in the Advanced Tab.
+        7. Under 'System Variables':
+            1. Add
+                * PY_HOME
+                `C:\Python27`
+                * PYTHONPATH
+                `%PY_HOME%\Lib;%PY_HOME%\DLLs;%PY_HOME%\Lib\lib-tk;C:\another-library`
+            2. Append
+                * Path
+                `%PY_HOME%;%PY_HOME%\Scripts\`
+    3. If your main drive is not `C:\`, then replace all occurrences above with your [drive letter](http://www.sevenforums.com/tutorials/82994-drive-letter-add-change-remove-windows.html).
+
 #### Step 2: Get the dependencies
