@@ -7,12 +7,12 @@ League Latency is currently not ported to a Windows .exe just yet... but, it soo
 In the meanwhile we will need to follow a "much-longer-than-I-want-to-have" installation process.
 It is still simple! But not simple for everyone.
 
-#### Step 1: Get Python
-#####1. Find out your Windows version (64-bit or 32-bit) [here](https://support.microsoft.com/en-us/help/13443/windows-which-operating-system).
-#####2. Download [Python](https://www.python.org/):
+### Step 1: Get Python
+####1. Find out your Windows version (64-bit or 32-bit) [here](https://support.microsoft.com/en-us/help/13443/windows-which-operating-system).
+####2. Download [Python](https://www.python.org/):
 1. If you are on 64-bit Windows, download the latest Python 2.7 installer [here](https://www.python.org/ftp/python/2.7.12/python-2.7.12.amd64.msi).
 2. If you are on 32-bit Windows, download the latest Python 2.7 installer [here](https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi).
-#####3. Install Python:
+####3. Install Python:
 1. Run the installer when download completes.
     1. During installation:
         1. If the **Open File - Security Warning** window pops-up, click **Run**.
@@ -39,7 +39,7 @@ It is still simple! But not simple for everyone.
             * Path
             `%PY_HOME%;%PY_HOME%\Scripts\`
 3. **If your main drive is not `C:\`, then replace all occurrences above with your [drive letter](http://www.sevenforums.com/tutorials/82994-drive-letter-add-change-remove-windows.html).**
-#####4. Verify that python was installed properly.
+####4. Verify that python was installed properly.
 1. Hold <kbd>Win</kbd> and press <kbd>R</kbd>.
 2. Type `cmd` and press <kbd>Enter</kbd>.
 3. Type `python` and press <kbd>Enter</kbd>.
