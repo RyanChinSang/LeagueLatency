@@ -39,5 +39,18 @@ It is still simple! But not simple for everyone.
                 * Path
                 `%PY_HOME%;%PY_HOME%\Scripts\`
     3. If your main drive is not `C:\`, then replace all occurrences above with your [drive letter](http://www.sevenforums.com/tutorials/82994-drive-letter-add-change-remove-windows.html).
+4. Verify that python was installed properly.
+    1. Hold <kbd>Win</kbd> and press <kbd>R</kbd>.
+    2. Type `cmd` and press <kbd>Enter</kbd>.
+    3. Type `python` and press <kbd>Enter</kbd>.
+        1. If the message is <u>similar</u> to:
+        `Python 2.7.12 (v2.7.12:d33e0cf91556, Jun 27 2016, 15:24:40) [MSC v.1500 64 bit (AMD64)] on win32
+        Type "help", "copyright", "credits" or "license" for more information.`
+        then, congratulations!
+        2. If the message is:
+        `'python' is not recognized as an internal or external command, operable program or batch file.﻿`
+        then, go to **Step 1: 3. ii.**
 
 #### Step 2: Get the dependencies
+1. Hold <kbd>Win</kbd> and press <kbd>R</kbd>.
+2. Type `cmd` and press <kbd>Enter</kbd>.
