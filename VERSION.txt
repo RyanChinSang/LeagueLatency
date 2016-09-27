@@ -1,8 +1,8 @@
 v1.9a to v2.0a
 tldr; Revamped UI, Average Graph and Icon!
-01- Changed the theme for matplotlib from ''fivethirtyeight'' to 'seaborn-darkgrid'
-02- Took all the Ping statistics out of one single, opaque legend and put each in their own text-box
-03- Text boxes are color coded based on very simple logic:
+01- Changed the theme for matplotlib from ''fivethirtyeight'' to 'seaborn-darkgrid'.
+02- Took all the Ping statistics out of one single, opaque legend and put each in its own text-box.
+03- Text boxes are colour coded based on very simple logic:
    a. For Ping:
         - [RED] If the current ping, at any instance is less than 90% or more than 110% of the current average ping.
         - [GREEN] If within the above range.
@@ -18,8 +18,8 @@ tldr; Revamped UI, Average Graph and Icon!
 07- Added an icon to display in window.
 08- Added a 2nd graph line to represent average ping.
 
-v2.0a to v2.1a (27.09.16)
-tldr; Re-branding, UI improvements and Stability!
+v2.0a to v2.1a (26.09.16)
+tldr; Re-branding, UI improvements (Buttons!) and Stability!
 01- Fixed bug where avg_lis and xar (ltimes) were of different lengths on "random" occasions.
 02- Added conversion to numpy arrays to solidify error-proof-ness.
 03- Revised and reduced the number of globals initialized and called within functions.
@@ -27,12 +27,27 @@ tldr; Re-branding, UI improvements and Stability!
 05- The addition of the Pause/Play button to pause progress of the Pinging.
 06- The addition of the Quit button - no longer have to close the window.
 07- Unified the placements of text data.
-08- Changed name from 'LoLPing' to 'LeagueLatency' as this is a much more unique name.
-09- Updated the icon of the program so match the new name.
+08- Changed name from 'LoLPing' to 'LeagueLatency' - as this is a much more unique name.
+09- Updated the icon of the program to match the new name.
 10- Updated and cleaned everything on Git.
 11- Made the status text next to the pause/play button look seamless into the button itself.
 12- Restructured parts of the code so that it makes more sense. (Addition to 04.)
 13- Renamed the class 'Index' to 'button_handler', because that is essentially what it does.
 14- Added alot comments! ("good enough" for now but, as always, to be continued!)
-15- Added changelog from undocumented v1.9a
+15- Added changelog from undocumented v1.9a.
 16- Removed step v2.1b and merge as new v2.1a because old v2.1a has been lost due to rebranding and Git cleanup.
+
+v2.1a to v2.1b (27.09.16)
+tldr; More standard program structure, Changed default save directory for screenshots.
+01- Moved icon.ico and pp_button.png to a static folder under which the subfolders define the type of static resource.
+02- Screetshots will no longer save in the Windows user folder. It will instead now save in a dedicated folder named.
+    'Screenshots' in the root directory of the script.
+    N.B: All directories should be variable and therefore flexible thanks to the os library.
+03- Renamed the 'button_handler' class to 'ButtonHandler' to respect the CamelCase convention.
+04- Minor tweaks to function description comments and standardized it with the """ desc """ convention.
+05- Renamed 'animate2' function to 'set_frame', as this better describes what the function does.
+06- Removed global CREATE_NO_WINDOW for subprocess and added a suitable note in function description in upd_data.
+    N.B: Only the global was removed - the value was just placed directly as the creationflag parameter for Popen.
+07- Minor grammatical and punctual changes in VERSION.txt.
+08- Added a few TODOs.
+09- Cleaned the Git from 2.1a to reflect new folder structure of 2.1b.

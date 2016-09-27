@@ -5,3 +5,9 @@
     - Functions are much smoother and updated (advanced)
     - Add a Quit button to this navtoolbar
 3. Port as a fully functional, standalone .exe for Windows
+4. Prioritize the TODOs
+5. Make better README.
+    - Add how to install
+    - Add screenshot?
+    - Add better information
+6. Make an updater. Or at the very least, an icon/hotlink to the Git repo on the GUI itself

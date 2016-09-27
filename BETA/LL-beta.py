@@ -1,8 +1,10 @@
 # Perform all experimental code here. When stable copy over to the stable folder as 'LL.py'.
 
+import os
 import sys
+import errno
 import subprocess
-import matplotlib
+import matplotlib as mpl
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -11,8 +13,6 @@ from matplotlib import style
 from datetime import datetime
 from matplotlib.widgets import RadioButtons, Button
 
-# A constant that forces Windows cmd to not generate a window when running the python subprocess through it
-CREATE_NO_WINDOW = 0x08000000
 # 'state' is used to keep track of weather the graph has been paused or not
 state = 0
 # Global arrays that keep the data for plotting the graphs
@@ -38,17 +38,19 @@ servers = {"NA": "104.160.131.3", "LAN": "104.160.136.3"}
 style.use('seaborn-darkgrid')
 fig = plt.figure(figsize=(16, 9))
 ax1 = fig.add_subplot(1, 1, 1)
-img = Image.open('pp_button.png')
+img = Image.open(os.path.dirname(__file__) + '/static/buttons/pp_button.png')
 img.thumbnail((64, 64), Image.ANTIALIAS)
-icon_manager = matplotlib.pyplot.get_current_fig_manager()
-icon_manager.window.wm_iconbitmap("icon.ico")
+icon_manager = mpl.pyplot.get_current_fig_manager()
+icon_manager.window.wm_iconbitmap(os.path.dirname(__file__) + '/static/icons/icon.ico')
 rax = plt.axes([0.881, 0.617, 0.089, 0.089], aspect='equal', frameon=True, axisbg='white')
 radio = RadioButtons(rax, servers.keys())
 radio_value = radio.value_selected
 
 
-# class created to handle the buttons
-class button_handler(object):
+class ButtonHandler(object):
+    """
+    Class created to handle button functionality via .on_clicked()
+    """
     ind = 0
 
     def quit(self, event):
@@ -63,19 +65,43 @@ class button_handler(object):
         plt.draw()
 
 
-# Function to correctly shutdown all processes of this program whenever closed by user
 def handle_close(event):
+    """
+    Safely shutdown all processes of this program whenever closed by user.
+    """
     sys.exit()
 
 
-# This function performs a Windows ping function and updates:
-# 1- ping    : which is stored in global array pings each instance
-# 2- time    : which is stored in global array ltimes each instance
-# 3- avg     : hence also count and sum_ping (based on radio_value's "NA" or "LAN")
-#            : which is stored in global array avg_lis each instance
-# 4- max_ping: (based on radio_value's "NA" or "LAN")
-# 5- min_ping: (based on radio_value's "NA" or "LAN")
+def set_savdir(sav_dir='Screenshots'):
+    """
+    Configures the default mpl save directory for screenshots.
+    Checks if there is a folder named 'Screenshots' in root folder.
+    If there is no folder there named 'Screenshots', it creates the directory.
+    """
+    if not os.path.isdir(os.path.join(os.path.dirname(__file__), sav_dir).replace('\\', '/')):
+        try:
+            os.makedirs(os.path.join(os.path.dirname(__file__), sav_dir).replace('\\', '/'))
+        except OSError as exc:
+            if not (exc.errno == errno.EEXIST and os.path.isdir(os.path.join(os.path.dirname(__file__),
+                                                                             sav_dir).replace('\\', '/'))):
+                raise
+    # Now that the directory for 'Screenshots' surely exists, set it as default directory.
+    mpl.rcParams["savefig.directory"] = os.path.join(os.path.dirname(__file__), sav_dir).replace('\\', '/')
+
+
 def upd_data():
+    """
+    This function performs a Windows ping function and updates:
+    1- ping    : which is stored in global array pings each instance
+    2- time    : which is stored in global array ltimes each instance
+    3- avg     : hence also count and sum_ping (based on radio_value's "NA" or "LAN")
+               : which is stored in global array avg_lis each instance
+    4- max_ping: (based on radio_value's "NA" or "LAN")
+    5- min_ping: (based on radio_value's "NA" or "LAN")
+
+    Notes:
+        1- creationflags=0x08000000 (for subprocess) forces Windows cmd to not generate a window.
+    """
     global pings, ltimes, sum_ping, servers, avg, avg_lis, radio_value
     global sum_ping_na, count_na, max_ping_na, min_ping_na
     global sum_ping_lan, count_lan, max_ping_lan, min_ping_lan
@@ -86,7 +112,7 @@ def upd_data():
                           stdin=subprocess.PIPE,
                           stderr=subprocess.PIPE,
                           shell=False,
-                          creationflags=CREATE_NO_WINDOW)
+                          creationflags=0x08000000)
     # For instantaneous interpretation of output from subprocess
     while p1.poll() is None:
         line = p1.stdout.readline()
@@ -116,8 +142,10 @@ def upd_data():
             ltimes += [ltime]
 
 
-# This function does the 'graphical updating' based on the newly updated data from upd_date()
 def animate(i):
+    """
+    Performs the 'graphical updating' based on the newly updated data from upd_date()
+    """
     global max_ping, min_ping, ltimes, pings, radio_value, servers, avg, avg_lis
     global sum_ping_na, count_na, max_ping_na, min_ping_na
     global sum_ping_lan, count_lan, max_ping_lan, min_ping_lan
@@ -183,20 +211,23 @@ def animate(i):
         upd_data()
 
 
-# Sets the initial frame of the Window in which will be animated
-def animate2():
+def set_frame():
+    """
+    Sets the initial frame of the Window in which will be animated through animate(i)
+    """
     global state
     fig.canvas.mpl_connect('close_event', handle_close)
-    fig.canvas.set_window_title('League Latency v2.1a BETA')
+    fig.canvas.set_window_title('League Latency v2.1b BETA')
     ani = animation.FuncAnimation(fig, animate, frames=120)
     # [(-=left, +=right), (-=up, +=down), (-=thin, +=wide), (-=thin, +=thick)]
     axquit = plt.axes([0.905, 0.01, 0.089, 0.05])
     bquit = Button(axquit, 'Quit')
-    bquit.on_clicked(button_handler().quit)
+    bquit.on_clicked(ButtonHandler().quit)
     axpp = plt.axes([0.835, 0.01, 0.1, 0.05])
     bpp = Button(axpp, '', image=img)
-    bpp.on_clicked(button_handler().pause)
+    bpp.on_clicked(ButtonHandler().pause)
     plt.show()
 
+set_savdir()
 upd_data()
-animate2()
+set_frame()
