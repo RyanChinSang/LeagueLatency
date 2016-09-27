@@ -1,8 +1,8 @@
 v1.9a to v2.0a
-tldr; A much nicer UI, theme and colour coded statistics!
-1- Changed the theme for matplotlib from ''fivethirtyeight'' to 'seaborn-darkgrid'
-2- Took all the Ping statistics out of one single, opaque legend and put each in their own text-box
-3- Text boxes are color coded based on very simple logic:
+tldr; Revamped UI, Average Graph and Icon!
+01- Changed the theme for matplotlib from ''fivethirtyeight'' to 'seaborn-darkgrid'
+02- Took all the Ping statistics out of one single, opaque legend and put each in their own text-box
+03- Text boxes are color coded based on very simple logic:
    a. For Ping:
         - [RED] If the current ping, at any instance is less than 90% or more than 110% of the current average ping.
         - [GREEN] If within the above range.
@@ -11,28 +11,28 @@ tldr; A much nicer UI, theme and colour coded statistics!
         - [RED] If the current ping is higher than current average, as this causes the average to go up.
         - [GREEN] If the current ping is lower than current average, as this causes the average to go down.
         - [BLUE] For no change (if current ping and current avg has the same value). This should very rarely occur.
-4- Reposition the Radio Buttons for aesthetics.
-5- Reposition and tuned the opacity of my signature on the interface.
+04- Reposition the Radio Buttons for aesthetics.
+05- Reposition and tuned the opacity of my signature on the interface.
+06- Added CREATE_NO_WINDOW as a creationflag to subprocess to suppress generating a cmd window on slower machines.
+    Faster machines did not show the windows because the process occurred too quickly.
+07- Added an icon to display in window.
+08- Added a 2nd graph line to represent average ping.
 
-v2.0a to v2.1a
-tldr; Stability and Buttons!
-1- Fixed bug where avg_lis and xar (ltimes) were of different lengths on "random" occasions.
-2- Added conversion to numpy arrays to solidify error-proof-ness.
-3- Revised and reduced the number of globals initialized and called within functions.
-4- Many logic enhancements.
-5- The addition of the Pause/Play button to pause progress of the Pinging.
-6- The addition of the Quit button - no longer have to close the window.
-7- Unified the placements of text data.
-8- Added some comments. (to be continued!)
-
-v2.1a to v2.1b (27.09.16)
-tldr; RENAMED and UI improvements and updates
-Note: Most of these changes should have made it into v2.1a
-1- Changed name from 'LoLPing' to 'LeagueLatency' as this is a much more unique name.
-2- Updated the icon of the program so match the new name.
-3- Updated and cleaned everything on Git.
-4- Made the status text next to the pause/play button look seamless into the button itself.
-5- Restructured parts of the code so that it makes more sense.
-6- Renamed the class 'Index' to 'button_handler', because that is essentially what it does.
-7- Added alot comments! ("good enough" for now but, as always, to be continued!)
-8- Added changelog from undocumented v1.9a
+v2.0a to v2.1a (27.09.16)
+tldr; Re-branding, UI improvements and Stability!
+01- Fixed bug where avg_lis and xar (ltimes) were of different lengths on "random" occasions.
+02- Added conversion to numpy arrays to solidify error-proof-ness.
+03- Revised and reduced the number of globals initialized and called within functions.
+04- Many logic enhancements.
+05- The addition of the Pause/Play button to pause progress of the Pinging.
+06- The addition of the Quit button - no longer have to close the window.
+07- Unified the placements of text data.
+08- Changed name from 'LoLPing' to 'LeagueLatency' as this is a much more unique name.
+09- Updated the icon of the program so match the new name.
+10- Updated and cleaned everything on Git.
+11- Made the status text next to the pause/play button look seamless into the button itself.
+12- Restructured parts of the code so that it makes more sense. (Addition to 04.)
+13- Renamed the class 'Index' to 'button_handler', because that is essentially what it does.
+14- Added alot comments! ("good enough" for now but, as always, to be continued!)
+15- Added changelog from undocumented v1.9a
+16- Removed step v2.1b and merge as new v2.1a because old v2.1a has been lost due to rebranding and Git cleanup.

@@ -187,7 +187,7 @@ def animate(i):
 def animate2():
     global state
     fig.canvas.mpl_connect('close_event', handle_close)
-    fig.canvas.set_window_title('League Latency v2.1b BETA')
+    fig.canvas.set_window_title('League Latency v2.1a BETA')
     ani = animation.FuncAnimation(fig, animate, frames=120)
     # [(-=left, +=right), (-=up, +=down), (-=thin, +=wide), (-=thin, +=thick)]
     axquit = plt.axes([0.905, 0.01, 0.089, 0.05])
