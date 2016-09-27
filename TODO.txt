@@ -1,0 +1,7 @@
+1. Add file menu with "Help" and "About"
+    - Shows all the Keyboard Shortcuts
+2. Add custom navigation toolbar:
+    - Looks much more modern
+    - Functions are much smoother and updated (advanced)
+    - Add a Quit button to this navtoolbar
+3. Port as a fully functional, standalone .exe for Windows

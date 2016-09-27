@@ -1,0 +1,38 @@
+v1.9a to v2.0a
+tldr; A much nicer UI, theme and colour coded statistics!
+1- Changed the theme for matplotlib from ''fivethirtyeight'' to 'seaborn-darkgrid'
+2- Took all the Ping statistics out of one single, opaque legend and put each in their own text-box
+3- Text boxes are color coded based on very simple logic:
+   a. For Ping:
+        - [RED] If the current ping, at any instance is less than 90% or more than 110% of the current average ping.
+        - [GREEN] If within the above range.
+        - [BLUE] For no change (if current ping and current avg has the same value). This should very rarely occur.
+   b. For Average:
+        - [RED] If the current ping is higher than current average, as this causes the average to go up.
+        - [GREEN] If the current ping is lower than current average, as this causes the average to go down.
+        - [BLUE] For no change (if current ping and current avg has the same value). This should very rarely occur.
+4- Reposition the Radio Buttons for aesthetics.
+5- Reposition and tuned the opacity of my signature on the interface.
+
+v2.0a to v2.1a
+tldr; Stability and Buttons!
+1- Fixed bug where avg_lis and xar (ltimes) were of different lengths on "random" occasions.
+2- Added conversion to numpy arrays to solidify error-proof-ness.
+3- Revised and reduced the number of globals initialized and called within functions.
+4- Many logic enhancements.
+5- The addition of the Pause/Play button to pause progress of the Pinging.
+6- The addition of the Quit button - no longer have to close the window.
+7- Unified the placements of text data.
+8- Added some comments. (to be continued!)
+
+v2.1a to v2.1b (27.09.16)
+tldr; RENAMED and UI improvements and updates
+Note: Most of these changes should have made it into v2.1a
+1- Changed name from 'LoLPing' to 'LeagueLatency' as this is a much more unique name.
+2- Updated the icon of the program so match the new name.
+3- Updated and cleaned everything on Git.
+4- Made the status text next to the pause/play button look seamless into the button itself.
+5- Restructured parts of the code so that it makes more sense.
+6- Renamed the class 'Index' to 'button_handler', because that is essentially what it does.
+7- Added alot comments! ("good enough" for now but, as always, to be continued!)
+8- Added changelog from undocumented v1.9a
