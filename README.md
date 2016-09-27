@@ -53,8 +53,22 @@ It is still simple! But not simple for everyone.
     then, congratulations!
     2. If the message is:
     `'python' is not recognized as an internal or external command, operable program or batch file.﻿`
-    then, go to **Step 1: 3. ii.**
+    then, go to **Step 1: 3. 2.**
 
 ### Step 2: Get the dependencies
 1. Hold <kbd>Win</kbd> and press <kbd>R</kbd>.
 2. Type `cmd` and press <kbd>Enter</kbd>.
+3. Type `python -m pip install matplotlib` and press <kbd>Enter</kbd>.
+    1. If you receive a message with `Successfully installed ...` in it, then congratulations!
+    2. If any errors have occurred, you may have a deeper problem. Try a Google search for your received error message and see if there are any solutions, or contact me.
+
+### Step 3: Get League Latency
+1. Go [here](https://github.com/RyanChinSang/LeagueLatency/raw/master/History/v2.1b%20Stable.zip) to download the latest, Stable LL (v2.1b)
+2. Unzip the files to wherever you'd like.
+3. Double-click `LL.py`.
+
+## About
+* **Bio**: My name is `Ryan Kevin Chin Sang`. I am a 3rd Year student at the [Univeristy of the West Indies, St. Augustine, Trinidad](http://sta.uwi.edu/) currently pursuing a **BSc. Electrical and Computer Engineering** focusing on the Communications and Computers thematic double-major. As I am a 'college' student, my free-time is very limited. As it stands, my time is always split squarely between Schoolwork (studying, doing assignments/labs, researching) and 'Me'-time (playing League of Legends, spending time with the gf, house-hold duties, etc.). The time I can spend on developing LeagueLatency is very small... but I love developing and I make sure to spend a fair amount of time on it, anyway.
+* **Contact**:
+    * Email: `ryancs1995@gmail.com`
+    * Facebook: [Ryan Chin Sang](https://www.facebook.com/RyanCS1995)
