@@ -51,3 +51,15 @@ tldr; More standard program structure, Changed default save directory for screen
 07- Minor grammatical and punctual changes in VERSION.txt.
 08- Added a few TODOs.
 09- Cleaned the Git from 2.1a to reflect new folder structure of 2.1b.
+
+v2.1b to v2.1c (28.09.16)
+tldr; New error handling - Stability improvements
+01- Fixed error where an IndexError was thrown:
+    "line 157, in animate; ping_val = str(pings[-1])"
+    This was due to upd_data not receiving a successful ping to the server, for many possible reasons.
+    The solution implemented established a subprocess-ping error handler which expects a unreachable to timeout, then,
+    creates a pop-up window to Retry or Cancel.
+02- Changed the name of the subprocess from 'p1' to 'sp' to coincide with the error handler (spperr_handler)
+03- Created a 'version' global variable to make it easier changing the version on updates.
+04- Added some more TODOs.
+05- Added minor comments to setup.py in Stable

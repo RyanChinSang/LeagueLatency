@@ -4,8 +4,9 @@ import os
 import sys
 import errno
 import subprocess
-import matplotlib as mpl
+import tkMessageBox
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from PIL import Image
@@ -13,6 +14,8 @@ from matplotlib import style
 from datetime import datetime
 from matplotlib.widgets import RadioButtons, Button
 
+# Update the version of the program here:
+version = "v2.1c BETA"
 # 'state' is used to keep track of weather the graph has been paused or not
 state = 0
 # Global arrays that keep the data for plotting the graphs
@@ -55,7 +58,7 @@ class ButtonHandler(object):
 
     def quit(self, event):
         self.ind += 1
-        handle_close(event)
+        close_handler(event)
         plt.draw()
 
     def pause(self, event):
@@ -65,11 +68,32 @@ class ButtonHandler(object):
         plt.draw()
 
 
-def handle_close(event):
+def close_handler(event):
     """
-    Safely shutdown all processes of this program whenever closed by user.
+    Safely shutdown all processes of this program whenever the window is closed by user.
     """
     sys.exit()
+
+
+def spperr_handler(err):
+    """
+    Sub-process ping error handler
+    Handles common 'errors' we can expect from Window's ping.exe, which is accessed through a subprocess.
+    'errors' refer to unsuccessful pings.
+    """
+    err_dict = {'Destination host unreachable': 'The destination was unreachable!\nPlease check your internet '
+                                                'connection and press Retry.',
+                'Request timed out': 'The destination took too long to respond!'}
+    try:
+        if tkMessageBox.askretrycancel(err, err_dict[err]):
+            upd_data()
+        else:
+            sys.exit()
+    # This should never occur - this handles errors not in the err_dict (the expected errors).
+    # Could be useful if a very powerful err_handler was coded, where every line is passed through here.
+    except KeyError:
+        if tkMessageBox.showerror('Unknown Error', 'The condition under which this error occurred was unexpected!'):
+            sys.exit()
 
 
 def set_savdir(sav_dir='Screenshots'):
@@ -107,15 +131,15 @@ def upd_data():
     global sum_ping_lan, count_lan, max_ping_lan, min_ping_lan
     # Recheck the radio button value so as to ping to the selected server
     radio_value = radio.value_selected
-    p1 = subprocess.Popen(["ping.exe", servers[radio_value], "-n", "1", "-l", "500"],
+    sp = subprocess.Popen(["ping.exe", servers[radio_value], "-n", "1", "-l", "500"],
                           stdout=subprocess.PIPE,
                           stdin=subprocess.PIPE,
                           stderr=subprocess.PIPE,
                           shell=False,
                           creationflags=0x08000000)
     # For instantaneous interpretation of output from subprocess
-    while p1.poll() is None:
-        line = p1.stdout.readline()
+    while sp.poll() is None:
+        line = sp.stdout.readline()
         # Data is updated in here from the newest subprocess ping
         if "time=" in line:
             ping = float(line[line.find("time=")+5:line.find("ms")])
@@ -140,6 +164,10 @@ def upd_data():
             interval = datetime.now() - start
             ltime = interval.total_seconds()
             ltimes += [ltime]
+        elif "Destination host unreachable" in line:
+            spperr_handler("Destination host unreachable")
+        elif "Request timed out" in line:
+            spperr_handler("Request timed out")
 
 
 def animate(i):
@@ -216,8 +244,8 @@ def set_frame():
     Sets the initial frame of the Window in which will be animated through animate(i)
     """
     global state
-    fig.canvas.mpl_connect('close_event', handle_close)
-    fig.canvas.set_window_title('League Latency v2.1b BETA')
+    fig.canvas.mpl_connect('close_event', close_handler)
+    fig.canvas.set_window_title('League Latency ' + version)
     ani = animation.FuncAnimation(fig, animate, frames=120)
     # [(-=left, +=right), (-=up, +=down), (-=thin, +=wide), (-=thin, +=thick)]
     axquit = plt.axes([0.905, 0.01, 0.089, 0.05])

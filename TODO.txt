@@ -11,3 +11,13 @@
     - Add screenshot?
     - Add better information
 6. Make an updater. Or at the very least, an icon/hotlink to the Git repo on the GUI itself
+7. Show other statistics:
+    - # of Timeouts
+    - # of Unreachables
+    - # Packets Sent
+    - # Packets Received
+    - # Packets Lost
+    - Loss %
+    - Standard deviation of ping
+8. Stop prompting the user for Timeouts or Unreachables after the data arrays are larger than 1
+    - This allows seamless continuation of graphing and statistics
