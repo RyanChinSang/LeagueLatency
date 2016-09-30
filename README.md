@@ -1,6 +1,7 @@
 # League Latency
 
 A Graphical UI that provides real-time Statistics and Graphs about your ping (latency) to the League of Legends NA or LAN server.
+![image](https://github.com/RyanChinSang/LeagueLatency/raw/master/History/Raw/v2.1b%20Stable/Screenshots/league_latency_v2.1b.png)
 
 ## How to Install
 League Latency is currently not ported to a Windows .exe just yet... but, it soon will!
