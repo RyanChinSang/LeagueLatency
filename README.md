@@ -73,3 +73,4 @@ It is still simple! But not simple for everyone.
 * **Contact**:
     * Email: `ryancs1995@gmail.com`
     * Facebook: [Ryan Chin Sang](https://www.facebook.com/RyanCS1995)
+    * IGN: [Rydrius](http://na.op.gg/summoner/userName=Rydrius)
