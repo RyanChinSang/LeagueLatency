@@ -63,3 +63,22 @@ tldr; New error handling - Stability improvements
 03- Created a 'version' global variable to make it easier changing the version on updates.
 04- Added some more TODOs.
 05- Added minor comments to setup.py in Stable
+
+v2.1c to v2.2a (02.10.16)
+tldr; More statistics and graphs! Better uniformity
+01- Made all text boxes of equal dimensions using a make_databox function.
+02- Added tracking for the number of timeouts or unreachables have occurred.
+03- Added a Retry message when a timeout error occurs
+04- Prioritized the TODOs
+05- Added IGN to README
+06- Added the latest screenshot to README
+07- Renamed all button variable names to 'xx_b' such as quit_b, pp_b etc.
+08- Added red up and green down arrow to indicate ice/fall of data.
+09- Added a ping summary circle which indicates concisely the state of your ping
+10- Added calculation of standard deviation and attached various calculations to it
+11- Based off #10, shows a range for 'stable' ping, where:
+    - Upper bound is indicated by a thin, red graph
+    - Lower bound is indicated by a thing, light blue graph
+    - Range is indicated by a light green tinted area within the plot area
+12- Added enhanced ping logic (based off #10 and #11)
+    - Has direct impact on drawing the databox for the ping readout

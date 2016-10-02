@@ -1,23 +1,39 @@
-1. Add file menu with "Help" and "About"
-    - Shows all the Keyboard Shortcuts
-2. Add custom navigation toolbar:
+Info:
+HIGH //add definition here
+MED  //add definition here
+LOW  //add definition here
+
+HIGH:
+1. Add custom navigation toolbar:
     - Looks much more modern
     - Functions are much smoother and updated (advanced)
     - Add a Quit button to this navtoolbar
-3. Port as a fully functional, standalone .exe for Windows
-4. Prioritize the TODOs
-5. Make better README.
-    - Add how to install
-    - Add screenshot?
-    - Add better information
-6. Make an updater. Or at the very least, an icon/hotlink to the Git repo on the GUI itself
-7. Show other statistics:
-    - # of Timeouts
-    - # of Unreachables
+2. Port as a fully functional, standalone .exe for Windows
+3. Make an updater. Or at the very least, an icon/hotlink to the Git repo on the GUI itself (Req. HIGH #2)
+4. Make functionality to switch between ping summary mode and graphing mode
+    - Ping summary mode shows the ping summary circle (implemented in v2.2a) and a ping value readout
+    - Graphing mode is the default (current) window
+5. Fix: When 'Paused' the graph is still in animation mode:
+    - This does not allow static functionality (eg. zooming into the graph) - it resets (animates) at the same (or faster?) rate
+
+MED:
+1. Add file menu with "Help" and "About"
+   - [Help]>Commands: Shows all the Keyboard Shortcuts
+   - [About] Shows information of Dev, version, and version date
+   - [Help]>Information: Shows detailed information of the Ping summary circle
+2. Show other statistics:
     - # Packets Sent
     - # Packets Received
     - # Packets Lost
     - Loss %
-    - Standard deviation of ping
-8. Stop prompting the user for Timeouts or Unreachables after the data arrays are larger than 1
-    - This allows seamless continuation of graphing and statistics
+3. Add some sort of diagnosis for when timeout or unreachable errors occur
+4. Add radio buttons for simplification toggling
+    - Show/Unshow some data
+    - Show/Unshow some (corresponding, where applicable) graphs
+
+LOW:
+1. Add definition of the task ranks
+2. Stop prompting the user for Timeouts or Unreachables after the data arrays are larger than 1
+   - This allows seamless continuation of graphing and statistics
+3. Simplification/Revision of the code
+4. Quantify 'small', 'medium', 'large' with regards to ping spikes

@@ -9,7 +9,7 @@ from matplotlib.widgets import RadioButtons
 
 style.use('fivethirtyeight')
 ltimes = []
-pings = []
+lpings = []
 avg = 0
 count = 0
 sum_ping = 0
@@ -37,7 +37,7 @@ def handle_close(event):
 
 
 def upd_data():
-    global pings, ltimes, sum_ping, count, max_ping, min_ping, radio_value, servers
+    global lpings, ltimes, sum_ping, count, max_ping, min_ping, radio_value, servers
     global sum_ping_na, count_na, max_ping_na, min_ping_na
     global sum_ping_lan, count_lan, max_ping_lan, min_ping_lan
     p1 = subprocess.Popen(["ping.exe", servers[radio_value], "-n", "1", "-l", "500"],
@@ -63,7 +63,7 @@ def upd_data():
                     max_ping_lan = ping
                 if min_ping_lan > ping:
                     min_ping_lan = ping
-            pings += [ping]
+            lpings += [ping]
             interval = datetime.now() - start
             ltime = interval.total_seconds()
             ltimes += [ltime]
@@ -71,12 +71,12 @@ def upd_data():
 
 
 def animate(i):
-    global max_ping, min_ping, sum_ping, ltimes, pings, count, radio_value, servers, avg
+    global max_ping, min_ping, sum_ping, ltimes, lpings, count, radio_value, servers, avg
     global sum_ping_na, count_na, max_ping_na, min_ping_na
     global sum_ping_lan, count_lan, max_ping_lan, min_ping_lan
-    ping_val = str(pings[count-1])
+    ping_val = str(lpings[count-1])
     time_val = str(ltimes[count-1])
-    yar = pings
+    yar = lpings
     xar = ltimes
     if radio_value == "NA":
         if count_na < 1:

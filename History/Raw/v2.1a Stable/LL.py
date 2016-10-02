@@ -15,7 +15,7 @@ CREATE_NO_WINDOW = 0x08000000
 state = 0
 # Global arrays that keep the data for plotting the graphs
 ltimes = []
-pings = []
+lpings = []
 avg_lis = []
 # Global variables
 avg = 0
@@ -74,7 +74,7 @@ def handle_close(event):
 # 4- max_ping: (based on radio_value's "NA" or "LAN")
 # 5- min_ping: (based on radio_value's "NA" or "LAN")
 def upd_data():
-    global pings, ltimes, sum_ping, servers, avg, avg_lis, radio_value
+    global lpings, ltimes, sum_ping, servers, avg, avg_lis, radio_value
     global sum_ping_na, count_na, max_ping_na, min_ping_na
     global sum_ping_lan, count_lan, max_ping_lan, min_ping_lan
     # Recheck the radio button value so as to ping to the selected server
@@ -108,7 +108,7 @@ def upd_data():
                 if min_ping_lan > ping:
                     min_ping_lan = ping
             avg_lis += [avg]
-            pings += [ping]
+            lpings += [ping]
             interval = datetime.now() - start
             ltime = interval.total_seconds()
             ltimes += [ltime]
@@ -116,7 +116,7 @@ def upd_data():
 
 # This function does the 'graphical updating' based on the newly updated data from upd_date()
 def animate(i):
-    global max_ping, min_ping, ltimes, pings, radio_value, servers, avg, avg_lis
+    global max_ping, min_ping, ltimes, lpings, radio_value, servers, avg, avg_lis
     global sum_ping_na, count_na, max_ping_na, min_ping_na
     global sum_ping_lan, count_lan, max_ping_lan, min_ping_lan
     if radio_value == "NA":
@@ -125,9 +125,9 @@ def animate(i):
     if radio_value == "LAN":
         max_ping = max_ping_lan
         min_ping = min_ping_lan
-    ping_val = str(pings[-1])
+    ping_val = str(lpings[-1])
     time_val = str(ltimes[-1])
-    yar = np.array(pings)
+    yar = np.array(lpings)
     xar = np.array(ltimes)
     avgar = np.array(avg_lis)
     ax1.clear()

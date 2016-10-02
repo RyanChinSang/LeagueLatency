@@ -14,7 +14,7 @@ p1 = subprocess.Popen(["ping.exe", "104.160.131.3", "-n", "5", "-l", "500"],
 
 open('values.txt', 'w').close()
 
-pings = [0]
+lpings = [0]
 ltimes = [0]
 count = 0
 sum_ping = 0
@@ -26,7 +26,7 @@ start = datetime.now()
 for line in iter(p1.stdout.readline, b''):
     if "time=" in line:
         ping = float(line[line.find("time=")+5:line.find("ms")])
-        pings += [ping]
+        lpings += [ping]
         interval = datetime.now() - start
         ltime = interval.total_seconds()
         ltimes += [ltime]
@@ -39,4 +39,4 @@ for line in iter(p1.stdout.readline, b''):
             min_ping = ping
 
         with open('values.txt', 'a') as values_file:
-            values_file.write(str(ltimes[count]) + "," + str(pings[count]) + "\n")
+            values_file.write(str(ltimes[count]) + "," + str(lpings[count]) + "\n")
