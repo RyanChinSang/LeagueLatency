@@ -4,7 +4,6 @@ v1.9a (n/a)
 tldr; Unreleased base version
 [To be added soon]
 
-
 v1.9a to v2.0a (n/a)
 tldr; Revamped UI, Average Graph and Icon!
 01- Changed the theme for matplotlib from ''fivethirtyeight'' to 'seaborn-darkgrid'.
@@ -91,7 +90,7 @@ tldr; More statistics and graphs! Better uniformity.
     - Has direct impact on drawing the databox for the ping readout.
 
 v2.2a to v2.3a (08.01.17)
-tldr;
+tldr; One uniform graph line! Logic fixes. Better use of colours. Better documentation.
 01- Increased the opacity of the blue (previously green) area for ping expectancy.
     a. 'alpha' from 0.0375 to 0.05
 02- Added better plotting functionality;
@@ -108,7 +107,10 @@ tldr;
     b. 200 <= ping <= 500               -> yellow zone
     c. 500 <= ping <= max_of_autoscale  -> red zone
     d. This fetches the auto limits set through matplotlib backend to maintain 'auto' ratio of the graph
-04- Changed all arrays into numpy arrays and removed some now unnecessary arrays;
+04- Fixed the calculation of standard deviation for the ping statistics.
+    a. sd was incorrect to varying degrees in 2.2a due to incorrect logic
+    b. Implemented through built-in functionality of the numpy arrays (see 05 below)
+05- Changed all arrays into numpy arrays and removed some now unnecessary arrays;
     a. Naming scheme changed:
        i. timear -> nptimes
       ii. pingar -> nppings
@@ -117,12 +119,12 @@ tldr;
     b. 'Duplicate' arrays are also numpu arrays:
        i. nppings_na & nppings_lan which hold specific values of pings for "NA" and "LAN" respectively.
       ii. gpings, ypings & rpings are processed duplicates of nppings
-05- Revised functions and classes, and standardized lengthy function descriptions;
+06- Revised functions and classes, and standardized lengthy function descriptions;
     a. ButtonHandler; updated description
     b. draw_ping; updated description and logic revision
     c. make_databox RENAMED to make_textbox; updated description
     d. upd_data; updated description
-06- Added and Revised many comments.
-07- Added definitions to TODO priorities.
+07- Added and Revised many comments.
+08- Added definitions to TODO priorities.
    NB: THIS SATISFIES TODO[LOW]#1
        "Add definition of the task ranks"
