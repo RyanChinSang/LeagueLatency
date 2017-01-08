@@ -1,5 +1,3 @@
-# Perform all experimental code here. When stable copy over to the stable folder as 'LL.py'.
-
 import os
 import sys
 import errno
@@ -15,7 +13,7 @@ from datetime import datetime
 from matplotlib.widgets import RadioButtons, Button
 
 # Update the version of the program here:
-version = "2.3a BETA"
+version = "2.3a"
 # 'state' is used to keep track of weather the graph has been paused or not
 state = 0
 # Global arrays that keep the data for plotting the graphs

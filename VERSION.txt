@@ -1,4 +1,11 @@
-v1.9a to v2.0a
+NOTE: All dates are in the format: dd.mm.yy
+
+v1.9a (n/a)
+tldr; Unreleased base version
+[To be added soon]
+
+
+v1.9a to v2.0a (n/a)
 tldr; Revamped UI, Average Graph and Icon!
 01- Changed the theme for matplotlib from ''fivethirtyeight'' to 'seaborn-darkgrid'.
 02- Took all the Ping statistics out of one single, opaque legend and put each in its own text-box.
@@ -82,3 +89,40 @@ tldr; More statistics and graphs! Better uniformity.
     - Range is indicated by a light green tinted area within the plot area.
 12- Added enhanced ping logic (based off #10 and #11)
     - Has direct impact on drawing the databox for the ping readout.
+
+v2.2a to v2.3a (08.01.17)
+tldr;
+01- Increased the opacity of the blue (previously green) area for ping expectancy.
+    a. 'alpha' from 0.0375 to 0.05
+02- Added better plotting functionality;
+    a. This is accomplished by segmenting the line into green, yellow and red segments based on ping value
+    b. Now the latency line appears as one, single and uniform line.
+    c. The line's next segment changes colour based on the ping value at each instant
+    d. This is done by segmenting the line it needs to draw in a logical way.
+    e. This is contrast to overlapping lines that only connected the higher ping values.
+    f. This eliminates the need for 'zorder'-ing the plots when overlapping; a bug that (accidentally) slipped in 2.2a
+   NB: THIS SATISFIES TODO[HIGH]#6
+       "Draw one continuous line for ping 'green' when ping < 200, 'yellow' when 200<=ping<=500, 'red' when ping>500"
+03- Added coloured ping zones implemented through the new function draw_zones(), where;
+    a. 0 <= ping <= 200                 -> green zone
+    b. 200 <= ping <= 500               -> yellow zone
+    c. 500 <= ping <= max_of_autoscale  -> red zone
+    d. This fetches the auto limits set through matplotlib backend to maintain 'auto' ratio of the graph
+04- Changed all arrays into numpy arrays and removed some now unnecessary arrays;
+    a. Naming scheme changed:
+       i. timear -> nptimes
+      ii. pingar -> nppings
+     iii. topar  -> nptop
+      iv. botar  -> npbot
+    b. 'Duplicate' arrays are also numpu arrays:
+       i. nppings_na & nppings_lan which hold specific values of pings for "NA" and "LAN" respectively.
+      ii. gpings, ypings & rpings are processed duplicates of nppings
+05- Revised functions and classes, and standardized lengthy function descriptions;
+    a. ButtonHandler; updated description
+    b. draw_ping; updated description and logic revision
+    c. make_databox RENAMED to make_textbox; updated description
+    d. upd_data; updated description
+06- Added and Revised many comments.
+07- Added definitions to TODO priorities.
+   NB: THIS SATISFIES TODO[LOW]#1
+       "Add definition of the task ranks"

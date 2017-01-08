@@ -1,7 +1,6 @@
-# Perform all experimental code here. When stable copy over to the stable folder as 'LL.py'.
-
 import os
 import sys
+import math
 import errno
 import subprocess
 import tkMessageBox
@@ -15,31 +14,41 @@ from datetime import datetime
 from matplotlib.widgets import RadioButtons, Button
 
 # Update the version of the program here:
-version = "2.3a BETA"
+version = "2.2a"
 # 'state' is used to keep track of weather the graph has been paused or not
 state = 0
 # Global arrays that keep the data for plotting the graphs
-nppings_lan = np.array([])
-nppings_na = np.array([])
-nppings = np.array([])
-nptimes = np.array([])
-npavgs = np.array([])
-nptop = np.array([])
-npbot = np.array([])
+ltimes = []
+wtimes = []
+btimes = []
+lpings = []
+wpings = []
+bpings = []
+avg_lis = []
+top = []
+bot = []
 # Global variables
 sd = 0
 avg = 0
 num_to = 0  # number of timeout errors
 num_un = 0  # number of unreachable errors
+sum_ping = 0
 min_ping = float('+inf')
 max_ping = float('-inf')
+count_na = 0
+sum_ping_na = 0
+sum_sq_dif_na = 0
 min_ping_na = float('+inf')
 max_ping_na = float('-inf')
+count_lan = 0
+sum_ping_lan = 0
+sum_sq_dif_lan = 0
 min_ping_lan = float('+inf')
 max_ping_lan = float('-inf')
 start = datetime.now()
+sq_dif_ar = []
 servers = {"NA": "104.160.131.3", "LAN": "104.160.136.3"}
-# matplotlib-related variable initializations
+# matplotlib related variable initialization
 style.use('seaborn-darkgrid')
 fig = plt.figure(figsize=(16, 9))
 ax1 = fig.add_subplot(1, 1, 1)
@@ -76,15 +85,14 @@ vunstwr_img.thumbnail((16, 16), Image.ANTIALIAS)
 vunstbd_img.thumbnail((16, 16), Image.ANTIALIAS)
 icon_manager = mpl.pyplot.get_current_fig_manager()
 icon_manager.window.wm_iconbitmap(os.path.dirname(__file__) + '/static/icons/icon.ico')
-rax1 = plt.axes([0.881, 0.535, 0.089, 0.089], aspect='equal', frameon=True, axisbg='white')
-radio = RadioButtons(rax1, servers.keys())
+rax = plt.axes([0.881, 0.535, 0.089, 0.089], aspect='equal', frameon=True, axisbg='white')
+radio = RadioButtons(rax, servers.keys())
 radio_value = radio.value_selected
 
 
-# Object definitons
 class ButtonHandler(object):
     """
-    Class created to handle button functionality via the .on_clicked() method.
+    Class created to handle button functionality via .on_clicked()
     """
     ind = 0
 
@@ -100,21 +108,12 @@ class ButtonHandler(object):
         plt.draw()
 
 
-# Function defintions
-def close_handler(event):
-    """
-    Safely shutdown all processes of this program whenever the window is closed by user.
-    """
-    sys.exit()
-
-
-def make_textbox(vpos, hpos, alpha, fc, ec):
+def make_databox(vpos, hpos, alpha, fc, ec):
     """
     Creates a box of all equal dimensions to hold the text data at the side of the graph - uniformity!
-
-    vpos  : vertical position float
-    hpos  : horizontal position float
-    alpha : strength of the colour float
+    vpos: vertical position float
+    hpos: horizontal position float
+    alpha: strength of the colour float
     colour: colour of the box string
     """
     return ax1.text(vpos, hpos, '______________.', transform=ax1.transAxes, alpha=0,
@@ -125,15 +124,18 @@ def make_textbox(vpos, hpos, alpha, fc, ec):
                           "lw": 2})
 
 
+def close_handler(event):
+    """
+    Safely shutdown all processes of this program whenever the window is closed by user.
+    """
+    sys.exit()
+
+
 def spperr_handler(err):
     """
-    Sub-Process Ping ERRor (SPPERR) handler
+    Sub-process ping error handler
     Handles common 'errors' we can expect from Window's ping.exe, which is accessed through a subprocess.
-
-    err: a string that is likely listed as a key in the defined err_dict dictionary
-
-    Notes:
-        1- 'errors' refer to any and all unsuccessful pings.
+    'errors' refer to unsuccessful pings.
     """
     err_dict = {'Destination host unreachable': 'The destination was unreachable!\nPlease check your internet '
                                                 'connection and press Retry.',
@@ -154,13 +156,9 @@ def spperr_handler(err):
 
 def set_savdir(sav_dir='Screenshots'):
     """
-    This function performs:
-    1- Configures the default mpl save directory for screenshots.
-    2- Checks if there is a folder named 'Screenshots' in root folder.
-       a. If there is no folder in the root folder named 'Screenshots', it creates the directory.
-       b. If the folder is there, then set it as the default directory.
-
-    sav_dir: the name of the folder in which all screenshots will be saved to (and set as default)
+    Configures the default mpl save directory for screenshots.
+    Checks if there is a folder named 'Screenshots' in root folder.
+    If there is no folder there named 'Screenshots', it creates the directory.
     """
     if not os.path.isdir(os.path.join(os.path.dirname(__file__), sav_dir).replace('\\', '/')):
         try:
@@ -176,169 +174,109 @@ def set_savdir(sav_dir='Screenshots'):
 def draw_ping(vpos, hpos, ping, up_bound, lo_bound, stdv, vpos_tb, hpos_tb, a_yellow, a_green, a_red):
     """
     A powerful function that performs:
-    1- The specification of the textbox (cred via make_textbox() function) which holds the ping data:
+    1- The specification of the databox which holds the ping data:
        a. Inner (face) colour represents the ping range
        b. Outer (edge) colour represents the ping state (spiked, below lo_bound etc.)
     2- Drawing the circle that summarizes the state of the ping
-
-    vpos    : the vertical position of the button it draws the ping circle in
-    hpos    : the horizontal position of the button it draws the ping circle in
-    ping    : the value of the current ping
-          NB: Used in data analysis and is a key factor to decide the state of the ping
+    vpos: the vertical position of the button it draws the ping circle in
+    hpos: the horizontal position of the button it draws the ping circle in
+    ping: the value of the current ping
+          used in data analysis and is a key factor to decide the state of the ping
     up_bound: represents the ping + standard deviation
     lo_bound: represents the ping - standard deviation
-    stdv    : the standard deviation calculated in upd_data(), passed from animate(i)
-    vpos_tb : the vertical position of the textbox which holds the ping data
-    hpos_tb : the horizontal position of the textbox which holds the ping data
-    a_yellow: the strength of the textbox colour for yellow
-    a_green : the strength of the textbox colour for green
-    a_red   : the strength of the textbox colour for red
+    stdv: the standard deviation calculated in upd_data(), passed from animate(i)
+    vpos_tb: the vertical position of the databox which holds the ping data
+    hpos_tb: the horizontal position of the databox which holds the ping data
+    a_yellow: the strength of the databox colour for yellow
+    a_green: the strength of the databox colour for green
+    a_red:  the strength of the databox colour for red
     """
     global avg
     # Ping is 'good'
-    if ping < 200:
+    if 0 <= ping <= 199:
         # Ping is very unstable - has very large and frequent spikes
         if stdv * 2 >= 0.3 * avg:
-            make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_green, fc="green", ec="red")
+            make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_green, fc="green", ec="red")
             return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=vunstgd_img, color='None')
         # Ping is unstable - has a few frequent medium spikes causing the range to go over 15% current average ping
         elif stdv * 2 >= 0.15 * avg:
-            make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_green, fc="green", ec="gold")
+            make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_green, fc="green", ec="gold")
             return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=unstgd_img, color='None')
         # Ping is stable
         elif lo_bound <= ping <= up_bound:
-            make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_green, fc="green", ec="green")
+            make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_green, fc="green", ec="green")
             return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=stgd_img, color='None')
         # Ping is out of bounds (unstable)
         else:
             # If ping is lower than lower bound, then all conditions tend toward a better ping - colour this as blue
             if ping <= lo_bound:
-                make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_green, fc="green", ec="blue")
+                make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_green, fc="green", ec="blue")
                 return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=unstlgd_img, color='None')
             # Else it is simply just unstable
             else:
-                make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_green, fc="green", ec="gold")
+                make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_green, fc="green", ec="gold")
                 return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=unstgd_img, color='None')
     # Ping is 'not good'
-    elif 200 <= ping <= 500:
+    elif 200 <= ping <= 499:
         if stdv * 2 >= 0.3 * avg:
-            make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_yellow, fc="yellow", ec="red")
+            make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_yellow, fc="yellow", ec="red")
             return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=vunstwr_img, color='None')
         elif stdv * 2 >= 0.15 * avg:
-            make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_yellow, fc="yellow", ec="gold")
+            make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_yellow, fc="yellow", ec="gold")
             return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=unstgd_img, color='None')
         elif lo_bound <= ping <= up_bound:
-            make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_yellow, fc="yellow", ec="green")
+            make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_yellow, fc="yellow", ec="green")
             return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=stwr_img, color='None')
         else:
             if ping <= lo_bound:
-                make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_yellow, fc="yellow", ec="blue")
+                make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_yellow, fc="yellow", ec="blue")
                 return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=unstlwr_img, color='None')
             else:
-                make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_yellow, fc="yellow", ec="gold")
+                make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_yellow, fc="yellow", ec="gold")
                 return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=unstwr_img, color='None')
     # Ping is 'bad'
     elif ping > 500:
         if stdv * 2 >= 0.3 * avg:
-            make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_red, fc="red", ec="black")
+            make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_red, fc="red", ec="black")
             return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=vunstbd_img, color='None')
         elif stdv * 2 >= 0.15 * avg:
-            make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_red, fc="red", ec="gold")
+            make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_red, fc="red", ec="gold")
             return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=unstgd_img, color='None')
         elif lo_bound <= ping <= up_bound:
-            make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_red, fc="red", ec="green")
+            make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_red, fc="red", ec="green")
             return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=stbd_img, color='None')
         else:
             if ping <= lo_bound:
-                make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_red, fc="red", ec="blue")
+                make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_red, fc="red", ec="blue")
                 return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=unstlbd_img, color='None')
             else:
-                make_textbox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_red, fc="red", ec="gold")
+                make_databox(vpos=vpos_tb, hpos=hpos_tb, alpha=a_red, fc="red", ec="gold")
                 return Button(plt.axes([hpos, vpos, 0.02, 0.02]), '', image=unstbd_img, color='None')
-
-
-def link(data1, data2):
-    """
-    The function performs:
-    1- Linking data1 to data2 for where there are matches in both index and value between data1 and data2
-       ie. surround data1's values with the values in data2
-       a. This allows the graph to be segmented by linking the segments to eachother.
-
-    data1: non-empty array whose values are to be linked to data2
-    data2: non-empty array whose values are used to link data1's values
-       NB: This is usually a much 'fuller' array than data2
-
-    Notes:
-        1- data1 and data2 must be lists of same datatype and of equal size.
-        2- 'fuller' refers to less non-values in the array (i.e. more real values) compared to the other array
-    """
-    seen = set()
-    seen_add = seen.add
-    loc_list = []
-    dloc_list = []
-    for val1 in data2:
-        for val2 in data1:
-            if val2 == val1:
-                for loc in np.where(data1 == val1)[0]:
-                    loc_list += [loc]
-                    dloc_list += [x for x in loc_list if not (x in seen or seen_add(x))]
-    for index in dloc_list:
-        if index == 0:
-            data1[index + 1] = data2[index + 1]
-        elif index == len(data2) - 1:
-            data1[index - 1] = data2[index - 1]
-        else:
-            data1[index - 1] = data2[index - 1]
-            data1[index + 1] = data2[index + 1]
-
-
-def draw_zones():
-    """
-    Colours the horizontal zones in the colour that represents the quality of the ping.
-    """
-    # Red i.e. 'bad' ping zone
-    if ax1.get_ylim()[1] > 500:
-        ax1.fill_between(ax1.get_xlim(), ax1.get_ylim()[0], 200, facecolor='green', interpolate=True,
-                         alpha=0.05)
-        ax1.fill_between(ax1.get_xlim(), 200, 500, facecolor='yellow', interpolate=True,
-                         alpha=0.05)
-        ax1.fill_between(ax1.get_xlim(), 500, ax1.get_ylim()[1], facecolor='red', interpolate=True,
-                         alpha=0.05)
-    # Yellow i.e. 'not good' ping zone
-    elif ax1.get_ylim()[1] > 200:
-        ax1.fill_between(ax1.get_xlim(), ax1.get_ylim()[0], 200, facecolor='green', interpolate=True,
-                         alpha=0.05)
-        ax1.fill_between(ax1.get_xlim(), 200, ax1.get_ylim()[1], facecolor='yellow', interpolate=True,
-                         alpha=0.05)
-    # Green i.e. 'good' ping zone
-    else:
-        ax1.fill_between(ax1.get_xlim(), ax1.get_ylim()[0], ax1.get_ylim()[1], facecolor='green', interpolate=True,
-                         alpha=0.05)
 
 
 def upd_data():
     """
-    This function performs a standard command prompt Windows ping function and updates:
-    1- nppings : which is stored in global numpy array nppings each instance
-            NB1: nppings stores all ping values and is used for plotting
-            NB2: nppings_xx stores all ping values for radio_value's "xx" and is used for statistical calculations
-    2- nptimes : which is stored in global numpy array nptimes each instance
-               : is used for plotting all graphs with respect to time
-    3- avg     : (based on radio_value's "NA" or "LAN")
-               : which is stored in global numpy array npavgs each instance
+    This function performs a Windows ping function and updates:
+    1- lping   : which is stored in global data array lpings each instance
+               : if lping >= 200 or <= 499, it is stored in global data array wpings each instance
+               : if lping >= 500, it is stored in global data array bpings each instance
+    2- ltime   : which is stored in global data array ltimes each instance
+               : is stored in global data array wtimes each instance wpings has a new value
+               : is stored in global data array btimes each instance wpings has a new value
+    3- avg     : hence also count and sum_ping (based on radio_value's "NA" or "LAN")
+               : which is stored in global array avg_lis each instance
     4- max_ping: (based on radio_value's "NA" or "LAN")
     5- min_ping: (based on radio_value's "NA" or "LAN")
-    6- sd      : the standard deviation (based on radio_value's "NA" or "LAN")
-               : used to calculate nptop (upper bound = avg + sd) and npbot (lower bound = avg - sd) values
-               : nptop and npbot are global numpy arrays
-
+    6- sd      : the standard deviation (lping-avg)^2/count (based on radio_value's "NA" or "LAN")
+               : used to calculate top (upper bound = avg + sd) and bot (lower bound = avg - sd)
+               : top and bot are global data arrays
     Notes:
         1- creationflags=0x08000000 (for subprocess) forces Windows cmd to not generate a window.
     """
-    global servers, avg, radio_value, num_un, num_to, sd
-    global nppings, nppings_na, nppings_lan, nptimes, npavgs, nptop, npbot
-    global max_ping_na, min_ping_na
-    global max_ping_lan, min_ping_lan
+    global lpings, ltimes, sum_ping, servers, avg, avg_lis, radio_value, num_un, num_to, top, bot, sd, wtimes, wpings, \
+        bpings, btimes
+    global sum_ping_na, count_na, max_ping_na, min_ping_na, sum_sq_dif_na
+    global sum_ping_lan, count_lan, max_ping_lan, min_ping_lan, sum_sq_dif_lan
     # Recheck the radio button value so as to ping to the selected server
     radio_value = radio.value_selected
     sp = subprocess.Popen(["ping.exe", servers[radio_value], "-n", "1", "-l", "500"],
@@ -352,24 +290,42 @@ def upd_data():
         line = sp.stdout.readline()
         # Data is updated in here from the newest subprocess ping
         if "time=" in line:
-            nppings = np.append(nppings, [float(line[line.find("time=")+5:line.find("ms")])])
-            interval = datetime.now() - start
-            nptimes = np.append(nptimes, [interval.total_seconds()])
+            lping = float(line[line.find("time=")+5:line.find("ms")])
             if radio_value == "NA":
-                nppings_na = np.append(nppings_na, [float(line[line.find("time=") + 5:line.find("ms")])])
-                max_ping_na = nppings_na.max()
-                min_ping_na = nppings_na.min()
-                avg = np.average(nppings_na)
-                sd = np.std(nppings_na, dtype=np.float32, axis=0)
+                sum_ping_na += lping
+                count_na += 1
+                avg = sum_ping_na / count_na
+                sq_dif = (lping - avg)*(lping - avg)
+                sum_sq_dif_na += sq_dif
+                sd = math.sqrt(sum_sq_dif_na / count_na)
+                if lping > max_ping_na:
+                    max_ping_na = lping
+                if min_ping_na > lping:
+                    min_ping_na = lping
             if radio_value == "LAN":
-                nppings_lan = np.append(nppings_lan, [float(line[line.find("time=") + 5:line.find("ms")])])
-                max_ping_lan = nppings_lan.max()
-                min_ping_lan = nppings_lan.min()
-                avg = np.average(nppings_lan)
-                sd = np.std(nppings_lan, dtype=np.float32, axis=0)
-            nptop = np.append(nptop, [avg + sd])
-            npbot = np.append(npbot, [avg - sd])
-            npavgs = np.append(npavgs, [avg])
+                sum_ping_lan += lping
+                count_lan += 1
+                avg = sum_ping_lan / count_lan
+                sq_dif = (lping - avg) * (lping - avg)
+                sum_sq_dif_lan += sq_dif
+                sd = math.sqrt(sum_sq_dif_lan / count_lan)
+                if lping > max_ping_lan:
+                    max_ping_lan = lping
+                if min_ping_lan > lping:
+                    min_ping_lan = lping
+            top += [avg + sd]
+            bot += [avg - sd]
+            avg_lis += [avg]
+            interval = datetime.now() - start
+            ltime = interval.total_seconds()
+            ltimes += [ltime]
+            lpings += [lping]
+            if 200 <= lping <= 499:
+                wpings += [lping]
+                wtimes += [ltime]
+            elif lping >= 500:
+                bpings += [lping]
+                btimes += [ltime]
         elif "Destination host unreachable" in line:
             num_un += 1
             spperr_handler("Destination host unreachable")
@@ -382,31 +338,25 @@ def animate(i):
     """
     Performs the 'graphical updating' based on the newly updated data from upd_date()
     """
-    global max_ping, min_ping, radio_value, servers, avg, num_to, num_un
-    global nppings, nptimes, npavgs, nptop, npbot
-    global max_ping_na, min_ping_na
-    global max_ping_lan, min_ping_lan
+    global max_ping, min_ping, ltimes, lpings, radio_value, servers, avg, avg_lis, num_to, num_un, top, bot, wtimes,\
+        wpings, btimes
+    global sum_ping_na, count_na, max_ping_na, min_ping_na
+    global sum_ping_lan, count_lan, max_ping_lan, min_ping_lan
     if radio_value == "NA":
         max_ping = max_ping_na
         min_ping = min_ping_na
     if radio_value == "LAN":
         max_ping = max_ping_lan
         min_ping = min_ping_lan
-    # Make 3 copies of the pings for making green, yellow and red plots
-    gpings = nppings.copy()
-    ypings = nppings.copy()
-    rpings = nppings.copy()
-    # For green plot points, keep all values < 200, set the rest to a non-point
-    gpings[gpings > 200] = np.nan
-    # For yellow plot points, keep all values > 200 and < 500, then link adjacent points
-    ypings[ypings <= 200] = 0
-    ypings[ypings >= 500] = 0
-    ypings[ypings == 0] = np.nan
-    link(ypings, nppings)
-    # For red plot points, keep all values > 500, then link adjacent points
-    rpings[rpings < 500] = np.nan
-    link(rpings, nppings)
-
+    pingar = np.array(lpings)
+    timear = np.array(ltimes)
+    w_pingar = np.array(wpings)
+    w_timear = np.array(wtimes)
+    b_pingar = np.array(bpings)
+    b_timear = np.array(btimes)
+    avgar = np.array(avg_lis)
+    topar = np.array(top)
+    botar = np.array(bot)
     ax1.clear()
     ax1.text(0.999, 1.02, 'by Ryan Chin Sang', ha='right', va='top', color='0.85', size='small',
              transform=ax1.transAxes)
@@ -421,66 +371,54 @@ def animate(i):
     a_green = 0.23
     a_yellow = 0.17
     # Ping data
-    ax1.text(vpos_tb, hpos_tb, "Ping: " + str(nppings[-1]) + " ms", transform=ax1.transAxes)
-    draw_ping(vpos=vpos_img + 0.0385, hpos=hpos_img, ping=nppings[-1], up_bound=nptop[-1], lo_bound=npbot[-1], stdv=sd,
+    ax1.text(vpos_tb, hpos_tb, "Ping: " + str(lpings[-1]) + " ms", transform=ax1.transAxes)
+    draw_ping(vpos=vpos_img + 0.0385, hpos=hpos_img, ping=lpings[-1], up_bound=top[-1], lo_bound=bot[-1], stdv=sd,
               vpos_tb=vpos_tb, hpos_tb=hpos_tb, a_green=a_green, a_red=a_red, a_yellow=a_yellow)
     # Average ping
-    if nppings[-1] < avg:
-        make_textbox(vpos=vpos_tb, hpos=hpos_tb - 0.05, alpha=a_green, fc="green", ec="green")
+    if lpings[-1] < avg:
+        make_databox(vpos=vpos_tb, hpos=hpos_tb - 0.05, alpha=a_green, fc="green", ec="green")
         ax1.text(vpos_tb, hpos_tb-0.05, "Avg: " + format(avg, '.3f') + " ms", transform=ax1.transAxes)
         Button(plt.axes([hpos_img, vpos_img, 0.02, 0.02]), '', image=dec_img, color='None')
-    elif nppings[-1] > avg:
-        make_textbox(vpos=vpos_tb, hpos=hpos_tb - 0.05, alpha=a_red, fc="red", ec="black")
+    elif lpings[-1] > avg:
+        make_databox(vpos=vpos_tb, hpos=hpos_tb - 0.05, alpha=a_red, fc="red", ec="black")
         ax1.text(vpos_tb, hpos_tb - 0.05, "Avg: " + format(avg, '.3f') + " ms", transform=ax1.transAxes)
         Button(plt.axes([hpos_img, vpos_img, 0.02, 0.02]), '', image=inc_img, color='None')
     else:
-        make_textbox(vpos=vpos_tb, hpos=hpos_tb - 0.05, alpha=a_blue, fc="blue", ec="blue")
+        make_databox(vpos=vpos_tb, hpos=hpos_tb - 0.05, alpha=a_blue, fc="blue", ec="blue")
         ax1.text(vpos_tb, hpos_tb - 0.05, "Avg: " + format(avg, '.3f') + " ms", transform=ax1.transAxes)
         Button(plt.axes([hpos_img, vpos_img, 0.02, 0.02]), '', image=null_img, color='None')
     # Time data
-    make_textbox(vpos=vpos_tb, hpos=hpos_tb - 0.1, alpha=a_blue, fc="blue", ec="blue")
-    ax1.text(vpos_tb, hpos_tb-0.1, "Time: " + str(nptimes[-1]) + " s", transform=ax1.transAxes)
+    make_databox(vpos=vpos_tb, hpos=hpos_tb - 0.1, alpha=a_blue, fc="blue", ec="blue")
+    ax1.text(vpos_tb, hpos_tb-0.1, "Time: " + str(ltimes[-1]) + " s", transform=ax1.transAxes)
     # Maximum Ping data
-    make_textbox(vpos=vpos_tb, hpos=hpos_tb - 0.15, alpha=a_blue, fc="blue", ec="blue")
+    make_databox(vpos=vpos_tb, hpos=hpos_tb - 0.15, alpha=a_blue, fc="blue", ec="blue")
     ax1.text(vpos_tb, hpos_tb-0.15, "Max: " + str(max_ping) + " ms", transform=ax1.transAxes)
     # Minimum Ping data
-    make_textbox(vpos=vpos_tb, hpos=hpos_tb - 0.2, alpha=a_blue, fc="blue", ec="blue")
+    make_databox(vpos=vpos_tb, hpos=hpos_tb - 0.2, alpha=a_blue, fc="blue", ec="blue")
     ax1.text(vpos_tb, hpos_tb-0.2, "Min: " + str(min_ping) + " ms", transform=ax1.transAxes)
     # No. of timeouts
-    make_textbox(vpos=vpos_tb, hpos=hpos_tb - 0.25, alpha=a_grey, fc="grey", ec="black")
+    make_databox(vpos=vpos_tb, hpos=hpos_tb - 0.25, alpha=a_grey, fc="grey", ec="black")
     ax1.text(vpos_tb, hpos_tb-0.25, "# Timeout: " + str(num_to), transform=ax1.transAxes)
     # No. of unreachables
-    make_textbox(vpos=vpos_tb, hpos=hpos_tb - 0.3, alpha=a_grey, fc="grey", ec="black")
+    make_databox(vpos=vpos_tb, hpos=hpos_tb - 0.3, alpha=a_grey, fc="grey", ec="black")
     ax1.text(vpos_tb, hpos_tb-0.3, "# Unreachable: " + str(num_un), transform=ax1.transAxes)
     # Shows state of the animated graph
     ax1.text(0.92, -0.0925, 'box', transform=ax1.transAxes, fontsize=22, zorder=0, alpha=0,
              bbox={'alpha': a_grey, 'pad': 5, "fc": "white", "ec": "black", "lw": 2})
     ax1.text(0.92, -0.087, '  Play' if state % 2 else 'Pause', transform=ax1.transAxes, zorder=1)
-    # Label the axes
     ax1.set_ylabel('Ping /ms', size='large')
     ax1.set_xlabel('Time /s', size='large')
-    # Title of graph
     ax1.set_title('Ping to League of Legends [' + radio_value + '] Server (' + servers[radio_value] + ')', fontsize=16,
                   fontweight='bold')
-    if nppings[-1] > 500:
-        ax1.plot(nptimes, gpings, color='g')
-        # Draws a yellow graph when ping goes over 200 ms and is less than or equal to 500 ms
-        ax1.plot(nptimes, ypings, color='y')
-        # Draws a red graph when ping goes over 500 ms
-        ax1.plot(nptimes, rpings, color='r', label="Ping")
-    elif nppings[-1] > 200:
-        ax1.plot(nptimes, gpings, color='g')
-        ax1.plot(nptimes, ypings, color='y', label="Ping")
-        ax1.plot(nptimes, rpings, color='r')
-    else:
-        ax1.plot(nptimes, gpings, color='g', label="Ping")
-        ax1.plot(nptimes, ypings, color='y')
-        ax1.plot(nptimes, rpings, color='r')
-    ax1.plot(nptimes, nptop, linewidth=0.3, color='r', alpha=0.5)
-    ax1.plot(nptimes, npavgs, linewidth=0.3, color='b', label="Average Ping", alpha=0.5)
-    ax1.plot(nptimes, npbot, linewidth=0.3, color='c', alpha=0.5)
-    ax1.fill_between(nptimes, npbot, nptop, facecolor='blue', interpolate=True, alpha=0.05)
-    draw_zones()
+    ax1.plot(timear, pingar, linewidth=1.0, label="Ping")
+    ax1.plot(timear, avgar, linewidth=0.6, label="Average Ping")
+    # Draws a yellow graph when ping goes over 200 ms and is less than 499 ms
+    ax1.plot(w_timear, w_pingar, linewidth=1.5, color='yellow', zorder=1)
+    # Draws a red graph when ping goes over 500 ms
+    ax1.plot(b_timear, b_pingar, linewidth=1.5, color='red', zorder=1)
+    ax1.plot(timear, topar, linewidth=0.3)
+    ax1.plot(timear, botar, linewidth=0.3)
+    ax1.fill_between(timear, botar, topar, facecolor='green', interpolate=True, alpha=0.0375)
     ax1.legend(loc='upper left')
     # Only update the data if state indicates 'play' (opposite of button logic)
     if state % 2 == 0:

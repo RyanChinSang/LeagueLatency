@@ -1,7 +1,7 @@
 # League Latency
 
 A Graphical UI that provides real-time Statistics and Graphs about your ping (latency) to the League of Legends NA or LAN server.
-![image](https://github.com/RyanChinSang/LeagueLatency/raw/master/History/Raw/v2.2a%20Stable/Screenshots/league_latency_v2.2a.png)
+![image](https://github.com/RyanChinSang/LeagueLatency/raw/master/History/Raw/v2.3a%20Stable/Screenshots/league_latency_v2.3a.png)
 
 ## How to Install
 League Latency is currently not ported to a Windows .exe just yet... but, it soon will!
@@ -64,7 +64,7 @@ It is still simple! But not simple for everyone.
     2. If any errors have occurred, you may have a deeper problem. Try a Google search for your received error message and see if there are any solutions, or contact me.
 
 ### Step 3: Get League Latency
-1. Go [here](https://github.com/RyanChinSang/LeagueLatency/raw/master/History/v2.2a%20Stable.zip) to download the latest, Stable LL (v2.2a)
+1. Go [here](https://github.com/RyanChinSang/LeagueLatency/raw/master/History/v2.3a%20Stable.zip) to download the latest, Stable LL (v2.3a)
 2. Unzip the files to wherever you'd like.
 3. Double-click `LL.py`.
 

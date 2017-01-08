@@ -1,7 +1,7 @@
 Info:
-HIGH //add definition here
-MED  //add definition here
-LOW  //add definition here
+HIGH: If accomplished would add very meaningful functionality. These are usually challenging to accomplish.
+MED : If accomplished would make the program more informative and user-friendly.
+LOW : If accomplished would add more meaning to either or both of documentation and presentation.
 
 HIGH:
 1. Add custom navigation toolbar:
@@ -15,6 +15,11 @@ HIGH:
     - Graphing mode is the default (current) window
 5. Fix: When 'Paused' the graph is still in animation mode:
     - This does not allow static functionality (eg. zooming into the graph) - it resets (animates) at the same (or faster?) rate
+7. The program needs a drastic speed enhancement:
+    - Perform testing to get current performance values, such as:
+      a. time it takes to draw a new point/update the graph from the immediately previous update
+      b. get the total time in which a. becomes intolerable (2 seconds?)
+      c. get the length of the arrays when b. occurs
 
 MED:
 1. Add file menu with "Help" and "About"
@@ -32,8 +37,12 @@ MED:
     - Show/Unshow some (corresponding, where applicable) graphs
 
 LOW:
-1. Add definition of the task ranks
 2. Stop prompting the user for Timeouts or Unreachables after the data arrays are larger than 1
    - This allows seamless continuation of graphing and statistics
 3. Simplification/Revision of the code
 4. Quantify 'small', 'medium', 'large' with regards to ping spikes
+5. Add more advanced linking logic;
+   Problem: ypings and rpings all always add adjacent points to its current contents;
+   Fixed by:
+   a. interpolating between values
+   b. more precise logic for linking the values
