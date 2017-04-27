@@ -131,7 +131,7 @@ tldr; One uniform graph line! Logic fixes. Better use of colours. Better documen
 
 v2.3a to v2.4a (27.04.17)
 tldr; Updated code for newer versions of backend (Python 2.7.13, matplotlib 2.0.0). Various UI fixes. Modernized look.
-      Changed from Python 2.7.11 and matplotlib 1.5.3.
+      Changed from Python 2.7.12 and matplotlib 1.5.3.
 01- Revised 'draw_zones()' function because of the (apparently) odd axes scaling on the new mpl 2.0.0.
     a. Functionality is essentially the same as in 2.3a, but this revision uses the mpl 'axhspan' function.
        i. 'axhspan' draws a rectangle and is not specifically 'filling between set limits'.
@@ -163,4 +163,5 @@ tldr; Updated code for newer versions of backend (Python 2.7.13, matplotlib 2.0.
        NB: 05 a. is accomplished by simply changing the 'font' value.
 06- Added a grayed colour for the radiobutton that is inactive for easier readability.
 07- New convention to keep the completed tasks described with '-DONE-' in the TODO.txt.
-08- Fixed headings and updated the README.md file.
+08- Added a backward compatibility for widget (radiobutton) axis with matplotlib 1.5.3.
+09- Fixed headings and updated the README.md file.

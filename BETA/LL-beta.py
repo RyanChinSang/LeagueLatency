@@ -83,7 +83,10 @@ vunstwr_img.thumbnail((32, 32), Image.ANTIALIAS)
 vunstbd_img.thumbnail((32, 32), Image.ANTIALIAS)
 icon_manager = mpl.pyplot.get_current_fig_manager()
 icon_manager.window.wm_iconbitmap(os.path.dirname(__file__) + '/static/icons/icon.ico')
-rax1 = plt.axes([0.881, 0.535, 0.089, 0.089], aspect='equal', frameon=False, facecolor='gray')
+if mpl.__version__ == '2.0.0':
+    rax1 = plt.axes([0.881, 0.535, 0.089, 0.089], aspect='equal', frameon=False, facecolor='gray')
+else:
+    rax1 = plt.axes([0.881, 0.535, 0.089, 0.089], aspect='equal', frameon=False, axisbg='gray')
 radio = RadioButtons(rax1, servers.keys())
 radio_value = radio.value_selected
 
