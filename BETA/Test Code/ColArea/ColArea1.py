@@ -41,20 +41,20 @@ def draw_zones():
     """
     Sets the zones etc.
     """
-    if ax1.get_ylim()[1] > 500:
-        ax1.fill_between(ax1.get_xlim(), ax1.get_ylim()[0], 200, facecolor='green', interpolate=True,
+    if ax1.get_ybound()[1] > 500:
+        ax1.fill_between(ax1.get_xbound(), ax1.get_ybound()[0], 200, facecolor='green', interpolate=True,
                          alpha=0.05)
-        ax1.fill_between(ax1.get_xlim(), 200, 500, facecolor='yellow', interpolate=True,
+        ax1.fill_between(ax1.get_xbound(), 200, 500, facecolor='yellow', interpolate=True,
                          alpha=0.05)
-        ax1.fill_between(ax1.get_xlim(), 500, ax1.get_ylim()[1], facecolor='red', interpolate=True,
+        ax1.fill_between(ax1.get_xbound(), 500, ax1.get_ybound()[1], facecolor='red', interpolate=True,
                          alpha=0.05)
-    elif ax1.get_ylim()[1] > 200:
-        ax1.fill_between(ax1.get_xlim(), ax1.get_ylim()[0], 200, facecolor='green', interpolate=True,
+    elif ax1.get_ybound()[1] > 200:
+        ax1.fill_between(ax1.get_xbound(), ax1.get_ybound()[0], 200, facecolor='green', interpolate=True,
                          alpha=0.05)
-        ax1.fill_between(ax1.get_xlim(), 200, ax1.get_ylim()[1], facecolor='yellow', interpolate=True,
+        ax1.fill_between(ax1.get_xbound(), 200, ax1.get_ybound()[1], facecolor='yellow', interpolate=True,
                          alpha=0.05)
     else:
-        ax1.fill_between(ax1.get_xlim(), ax1.get_ylim()[0], ax1.get_ylim()[1], facecolor='green', interpolate=True,
+        ax1.fill_between(ax1.get_xbound(), ax1.get_ybound()[0], ax1.get_ybound()[1], facecolor='green', interpolate=True,
                          alpha=0.05)
 
 

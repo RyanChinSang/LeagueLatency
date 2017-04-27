@@ -1,7 +1,7 @@
 # League Latency
 
 A Graphical UI that provides real-time Statistics and Graphs about your ping (latency) to the League of Legends NA or LAN server.
-![image](https://github.com/RyanChinSang/LeagueLatency/raw/master/History/Raw/v2.3a%20Stable/Screenshots/league_latency_v2.3a.png)
+![image](https://github.com/RyanChinSang/LeagueLatency/raw/master/History/Raw/v2.4a%20Stable/Screenshots/league_latency_v2.4a.png)
 
 ## How to Install
 League Latency is currently not ported to a Windows .exe just yet... but, it soon will!
@@ -10,13 +10,13 @@ It is still simple! But not simple for everyone.
 
 ### Step 1: Get Python
 
-####1. Find out your Windows version (64-bit or 32-bit) [here](https://support.microsoft.com/en-us/help/13443/windows-which-operating-system).
+#### 1. Find out your Windows version (64-bit or 32-bit) [here](https://support.microsoft.com/en-us/help/13443/windows-which-operating-system).
 
-####2. Download [Python](https://www.python.org/):
+#### 2. Download [Python](https://www.python.org/):
 1. If you are on 64-bit Windows, download the latest Python 2.7 installer [here](https://www.python.org/ftp/python/2.7.12/python-2.7.12.amd64.msi).
 2. If you are on 32-bit Windows, download the latest Python 2.7 installer [here](https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi).
 
-####3. Install Python:
+#### 3. Install Python:
 1. Run the installer when download completes.
     1. During installation:
         1. If the **Open File - Security Warning** window pops-up, click **Run**.
@@ -44,7 +44,7 @@ It is still simple! But not simple for everyone.
             `%PY_HOME%;%PY_HOME%\Scripts\`
 3. **If your main drive is not `C:\`, then replace all occurrences above with your [drive letter](http://www.sevenforums.com/tutorials/82994-drive-letter-add-change-remove-windows.html).**
 
-####4. Verify that python was installed properly.
+#### 4. Verify that python was installed properly.
 1. Hold <kbd>Win</kbd> and press <kbd>R</kbd>.
 2. Type `cmd` and press <kbd>Enter</kbd>.
 3. Type `python` and press <kbd>Enter</kbd>.
@@ -52,6 +52,7 @@ It is still simple! But not simple for everyone.
     `Python 2.7.12 (v2.7.12:d33e0cf91556, Jun 27 2016, 15:24:40) [MSC v.1500 64 bit (AMD64)] on win32
     Type "help", "copyright", "credits" or "license" for more information.`
     then, congratulations!
+    (NB: If Python sub-versions change fairly frequently, so yours may read 'Python 2.7.13' etc. - all the same!)
     2. If the message is:
     `'python' is not recognized as an internal or external command, operable program or batch file.﻿`
     then, go to **Step 1: 3. 2.**
@@ -64,7 +65,7 @@ It is still simple! But not simple for everyone.
     2. If any errors have occurred, you may have a deeper problem. Try a Google search for your received error message and see if there are any solutions, or contact me.
 
 ### Step 3: Get League Latency
-1. Go [here](https://github.com/RyanChinSang/LeagueLatency/raw/master/History/v2.3a%20Stable.zip) to download the latest, Stable LL (v2.3a)
+1. Go [here](https://github.com/RyanChinSang/LeagueLatency/raw/master/History/v2.4a%20Stable.zip) to download the latest, Stable LL (v2.4a)
 2. Unzip the files to wherever you'd like.
 3. Double-click `LL.py`.
 

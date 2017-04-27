@@ -128,3 +128,39 @@ tldr; One uniform graph line! Logic fixes. Better use of colours. Better documen
 08- Added definitions to TODO priorities.
    NB: THIS SATISFIES TODO[LOW]#1
        "Add definition of the task ranks"
+
+v2.3a to v2.4a (27.04.17)
+tldr; Updated code for newer versions of backend (Python 2.7.13, matplotlib 2.0.0). Various UI fixes. Modernized look.
+      Changed from Python 2.7.11 and matplotlib 1.5.3.
+01- Revised 'draw_zones()' function because of the (apparently) odd axes scaling on the new mpl 2.0.0.
+    a. Functionality is essentially the same as in 2.3a, but this revision uses the mpl 'axhspan' function.
+       i. 'axhspan' draws a rectangle and is not specifically 'filling between set limits'.
+      ii. 'axhspan' always draws this rectangle to span the entirety of the x-axis' range.
+    b. 'draw_zones()' has parameters being passed to it from 'animate()': 'yax_min' and 'yax_max'.
+       i. 'yax_min' is the same as the mpl's default minimum y-limit.
+      ii. 'yax_max' is the same as the mpl's default maximum y-limit.
+     iii. These values are used to set the limits for the y-axis so that mpl does not override it automatically.
+          NB: Yes, this is essentially setting the limits to mpl's own auto-limits. Very funny mpl 2.0.0... not.
+    c. Fixed the weird lines that occurred between the ping limited zone values.
+       i. This was accomplished by setting the 'edgecolor' parameter to 'none'.
+02- Fixed an undocumented error which pops up when 'upd_data()' did not populate 'nppings' before 'link()' calls.
+    a. The problem was mismatching array sizes to plot. Reporting:
+       "link(ypings, nppings)"
+       "data1[index + 1] = data2[index + 1]"
+       "IndexError: index 1 is out of bounds for axis 0 with size 1"
+       i. This occurred only when the very first ping made in 'upd_data()' took to long to respond.
+    b. This was fixed by forcing 'upd_data()' to be repeatedly called until 'nppings' had at least one value, then
+       allowing animation to flow.
+03- Changed the status text and textbox to a Play / Pause indicator which changes based on the state of the graph.
+    a. This Play / Pause indicator is a button object with no on.clicked method linked - so it's just an image.
+    b. This required the addition of 2 new images to the static/buttons directory: 'pa_button.png' and 'pl_button.png'.
+04- Alot of the positioning was just bad with the new mpl 2.0.0. So below summarizes the positioning fixes:
+    a. Checkbox area for NA/LAN selection.
+    b. 'Buttons' for ping summary and arrow indicator.
+    c. Play / Pause indicator image (where the old status text and textbox used to be).
+05- Changed the text to 'Agency FB' and customized the font sizes of many of the displayed texts.
+    a. This is personal preference and can be added as a customization feature later using a drop-down list.
+       NB: 05 a. is accomplished by simply changing the 'font' value.
+06- Added a grayed colour for the radiobutton that is inactive for easier readability.
+07- New convention to keep the completed tasks described with '-DONE-' in the TODO.txt.
+08- Fixed headings and updated the README.md file.

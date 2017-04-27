@@ -15,7 +15,7 @@ from datetime import datetime
 from matplotlib.widgets import RadioButtons, Button
 
 # Update the version of the program here:
-version = "2.3a BETA"
+version = "2.4a BETA"
 # 'state' is used to keep track of weather the graph has been paused or not
 state = 0
 # Global arrays that keep the data for plotting the graphs
@@ -26,6 +26,7 @@ nptimes = np.array([])
 npavgs = np.array([])
 nptop = np.array([])
 npbot = np.array([])
+font = 'Agency FB'
 # Global variables
 sd = 0
 avg = 0
@@ -43,7 +44,11 @@ servers = {"NA": "104.160.131.3", "LAN": "104.160.136.3"}
 style.use('seaborn-darkgrid')
 fig = plt.figure(figsize=(16, 9))
 ax1 = fig.add_subplot(1, 1, 1)
+mpl.rcParams["font.family"] = font
+mpl.rcParams["font.size"] = 13
 pp_img = Image.open(os.path.dirname(__file__) + '/static/buttons/pp_button.png')
+pl_img = Image.open(os.path.dirname(__file__) + '/static/buttons/pl_button.png')
+pa_img = Image.open(os.path.dirname(__file__) + '/static/buttons/pa_button.png')
 dec_img = Image.open(os.path.dirname(__file__) + '/static/buttons/dec.png')
 inc_img = Image.open(os.path.dirname(__file__) + '/static/buttons/inc.png')
 null_img = Image.open(os.path.dirname(__file__) + '/static/buttons/null.png')
@@ -59,24 +64,26 @@ unstlbd_img = Image.open(os.path.dirname(__file__) + '/static/buttons/unstlbd.pn
 vunstgd_img = Image.open(os.path.dirname(__file__) + '/static/buttons/vunstgd.png')
 vunstwr_img = Image.open(os.path.dirname(__file__) + '/static/buttons/vunstwr.png')
 vunstbd_img = Image.open(os.path.dirname(__file__) + '/static/buttons/vunstbd.png')
-pp_img.thumbnail((64, 64), Image.ANTIALIAS)
-dec_img.thumbnail((16, 16), Image.ANTIALIAS)
-inc_img.thumbnail((16, 16), Image.ANTIALIAS)
-stgd_img.thumbnail((16, 16), Image.ANTIALIAS)
-stwr_img.thumbnail((16, 16), Image.ANTIALIAS)
-stbd_img.thumbnail((16, 16), Image.ANTIALIAS)
-unstgd_img.thumbnail((16, 16), Image.ANTIALIAS)
-unstwr_img.thumbnail((16, 16), Image.ANTIALIAS)
-unstbd_img.thumbnail((16, 16), Image.ANTIALIAS)
-unstlgd_img.thumbnail((16, 16), Image.ANTIALIAS)
-unstlwr_img.thumbnail((16, 16), Image.ANTIALIAS)
-unstlbd_img.thumbnail((16, 16), Image.ANTIALIAS)
-vunstgd_img.thumbnail((16, 16), Image.ANTIALIAS)
-vunstwr_img.thumbnail((16, 16), Image.ANTIALIAS)
-vunstbd_img.thumbnail((16, 16), Image.ANTIALIAS)
+pp_img.thumbnail((128, 128), Image.ANTIALIAS)
+pl_img.thumbnail((55, 55), Image.ANTIALIAS)
+pa_img.thumbnail((55, 55), Image.ANTIALIAS)
+dec_img.thumbnail((32, 32), Image.ANTIALIAS)
+inc_img.thumbnail((32, 32), Image.ANTIALIAS)
+stgd_img.thumbnail((32, 32), Image.ANTIALIAS)
+stwr_img.thumbnail((32, 32), Image.ANTIALIAS)
+stbd_img.thumbnail((32, 32), Image.ANTIALIAS)
+unstgd_img.thumbnail((32, 32), Image.ANTIALIAS)
+unstwr_img.thumbnail((32, 32), Image.ANTIALIAS)
+unstbd_img.thumbnail((32, 32), Image.ANTIALIAS)
+unstlgd_img.thumbnail((32, 32), Image.ANTIALIAS)
+unstlwr_img.thumbnail((32, 32), Image.ANTIALIAS)
+unstlbd_img.thumbnail((32, 32), Image.ANTIALIAS)
+vunstgd_img.thumbnail((32, 32), Image.ANTIALIAS)
+vunstwr_img.thumbnail((32, 32), Image.ANTIALIAS)
+vunstbd_img.thumbnail((32, 32), Image.ANTIALIAS)
 icon_manager = mpl.pyplot.get_current_fig_manager()
 icon_manager.window.wm_iconbitmap(os.path.dirname(__file__) + '/static/icons/icon.ico')
-rax1 = plt.axes([0.881, 0.535, 0.089, 0.089], aspect='equal', frameon=True, axisbg='white')
+rax1 = plt.axes([0.881, 0.535, 0.089, 0.089], aspect='equal', frameon=False, facecolor='gray')
 radio = RadioButtons(rax1, servers.keys())
 radio_value = radio.value_selected
 
@@ -292,28 +299,22 @@ def link(data1, data2):
             data1[index + 1] = data2[index + 1]
 
 
-def draw_zones():
+def draw_zones(yax_min, yax_max):
     """
     Colours the horizontal zones in the colour that represents the quality of the ping.
     """
     # Red i.e. 'bad' ping zone
-    if ax1.get_ylim()[1] > 500:
-        ax1.fill_between(ax1.get_xlim(), ax1.get_ylim()[0], 200, facecolor='green', interpolate=True,
-                         alpha=0.05)
-        ax1.fill_between(ax1.get_xlim(), 200, 500, facecolor='yellow', interpolate=True,
-                         alpha=0.05)
-        ax1.fill_between(ax1.get_xlim(), 500, ax1.get_ylim()[1], facecolor='red', interpolate=True,
-                         alpha=0.05)
+    if yax_max > 500:
+        ax1.axhspan(yax_min, 200, fc='green', ec='none', alpha=0.10)
+        ax1.axhspan(200, 500, fc='yellow', ec='none', alpha=0.10)
+        ax1.axhspan(500, yax_max, fc='red', ec='none', alpha=0.10)
     # Yellow i.e. 'not good' ping zone
-    elif ax1.get_ylim()[1] > 200:
-        ax1.fill_between(ax1.get_xlim(), ax1.get_ylim()[0], 200, facecolor='green', interpolate=True,
-                         alpha=0.05)
-        ax1.fill_between(ax1.get_xlim(), 200, ax1.get_ylim()[1], facecolor='yellow', interpolate=True,
-                         alpha=0.05)
+    elif yax_max > 200:
+        ax1.axhspan(yax_min, 200, fc='green', ec='none', alpha=0.10)
+        ax1.axhspan(200, yax_max, fc='yellow', ec='none', alpha=0.10)
     # Green i.e. 'good' ping zone
     else:
-        ax1.fill_between(ax1.get_xlim(), ax1.get_ylim()[0], ax1.get_ylim()[1], facecolor='green', interpolate=True,
-                         alpha=0.05)
+        ax1.axhspan(yax_min, yax_max, fc='green', ec='none', alpha=0.10)
 
 
 def upd_data():
@@ -408,13 +409,13 @@ def animate(i):
     link(rpings, nppings)
 
     ax1.clear()
-    ax1.text(0.999, 1.02, 'by Ryan Chin Sang', ha='right', va='top', color='0.85', size='small',
+    ax1.text(0.999, 1.02, 'by Ryan Chin Sang', ha='right', va='top', color='0.85', size='x-small',
              transform=ax1.transAxes)
     # Positions of the first textbox to display data
     vpos_tb = 1.01
     hpos_tb = 0.973
-    hpos_img = 0.88
-    vpos_img = 0.8325
+    hpos_img = 0.88  # -ve = left
+    vpos_img = 0.815  # -ve = down
     a_red = 0.3
     a_grey = 0.2
     a_blue = 0.14
@@ -453,14 +454,16 @@ def animate(i):
     make_textbox(vpos=vpos_tb, hpos=hpos_tb - 0.3, alpha=a_grey, fc="grey", ec="black")
     ax1.text(vpos_tb, hpos_tb-0.3, "# Unreachable: " + str(num_un), transform=ax1.transAxes)
     # Shows state of the animated graph
-    ax1.text(0.92, -0.0925, 'box', transform=ax1.transAxes, fontsize=22, zorder=0, alpha=0,
-             bbox={'alpha': a_grey, 'pad': 5, "fc": "white", "ec": "black", "lw": 2})
-    ax1.text(0.92, -0.087, '  Play' if state % 2 else 'Pause', transform=ax1.transAxes, zorder=1)
+    if state % 2:
+        Button(plt.axes([0.8, 0.0225, 0.12, 0.025]), '', image=pl_img, color='None')
+    else:
+        Button(plt.axes([0.8, 0.0225, 0.12, 0.025]), '', image=pa_img, color='None')
     # Label the axes
-    ax1.set_ylabel('Ping /ms', size='large')
-    ax1.set_xlabel('Time /s', size='large')
+    axfont = {'fontname': font}
+    ax1.set_ylabel('Ping [ms]', size='large', **axfont)
+    ax1.set_xlabel('Time [s]', size='large', **axfont)
     # Title of graph
-    ax1.set_title('Ping to League of Legends [' + radio_value + '] Server (' + servers[radio_value] + ')', fontsize=16,
+    ax1.set_title('Ping to League of Legends [' + radio_value + '] Server (' + servers[radio_value] + ')', fontsize=17,
                   fontweight='bold')
     if nppings[-1] > 500:
         ax1.plot(nptimes, gpings, color='g')
@@ -476,11 +479,15 @@ def animate(i):
         ax1.plot(nptimes, gpings, color='g', label="Ping")
         ax1.plot(nptimes, ypings, color='y')
         ax1.plot(nptimes, rpings, color='r')
+
+    yax_min = ax1.get_ylim()[0]
+    yax_max = ax1.get_ylim()[1]
+    ax1.set_ylim([yax_min, yax_max])
     ax1.plot(nptimes, nptop, linewidth=0.3, color='r', alpha=0.5)
     ax1.plot(nptimes, npavgs, linewidth=0.3, color='b', label="Average Ping", alpha=0.5)
     ax1.plot(nptimes, npbot, linewidth=0.3, color='c', alpha=0.5)
     ax1.fill_between(nptimes, npbot, nptop, facecolor='blue', interpolate=True, alpha=0.05)
-    draw_zones()
+    draw_zones(yax_min, yax_max)
     ax1.legend(loc='upper left')
     # Only update the data if state indicates 'play' (opposite of button logic)
     if state % 2 == 0:
@@ -496,12 +503,14 @@ def set_frame():
     fig.canvas.set_window_title('League Latency v' + version)
     ani = animation.FuncAnimation(fig, animate, frames=120)
     # [(-=left, +=right), (-=up, +=down), (-=thin, +=wide), (-=thin, +=thick)]
-    quit_b = Button(plt.axes([0.905, 0.01, 0.089, 0.05]), 'Quit')
+    quit_b = Button(plt.axes([0.905, 0.01, 0.089, 0.05]), label='Quit')
     quit_b.on_clicked(ButtonHandler().quit)
+    quit_b.label.set_fontsize(15)
     pp_b = Button(plt.axes([0.835, 0.01, 0.1, 0.05]), '', image=pp_img)
     pp_b.on_clicked(ButtonHandler().pause)
     plt.show()
 
 set_savdir()
-upd_data()
+while nppings.size < 1:
+    upd_data()
 set_frame()

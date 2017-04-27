@@ -13,6 +13,7 @@ HIGH:
 4. Make functionality to switch between ping summary mode and graphing mode
     - Ping summary mode shows the ping summary circle (implemented in v2.2a) and a ping value readout
     - Graphing mode is the default (current) window
+6. -DONE-
 5. Fix: When 'Paused' the graph is still in animation mode:
     - This does not allow static functionality (eg. zooming into the graph) - it resets (animates) at the same (or faster?) rate
 7. The program needs a drastic speed enhancement:
@@ -20,9 +21,14 @@ HIGH:
       a. time it takes to draw a new point/update the graph from the immediately previous update
       b. get the total time in which a. becomes intolerable (2 seconds?)
       c. get the length of the arrays when b. occurs
-
+8. Make a 'Reset' and/or 'Refresh' functionality
+    - Interface using Button(img=)
+    - 'Reset' basically restarts the whole program as if you'd close and restart it
+      a. This means all data in npptimes and nptimes etc. is wiped
+    - 'Refresh' keeps all the very latest data, and resets the sizes of all arrays from 1 and then continues
 MED:
-1. Add file menu with "Help" and "About"
+1. Add file menu with "Settings", ""Help" and "About"
+   - [Settings]>Font: Change the font of the program (Arial, Times New Roman, Agency FB etc.)
    - [Help]>Commands: Shows all the Keyboard Shortcuts
    - [About] Shows information of Dev, version, and version date
    - [Help]>Information: Shows detailed information of the Ping summary circle
@@ -37,6 +43,7 @@ MED:
     - Show/Unshow some (corresponding, where applicable) graphs
 
 LOW:
+1. -DONE-
 2. Stop prompting the user for Timeouts or Unreachables after the data arrays are larger than 1
    - This allows seamless continuation of graphing and statistics
 3. Simplification/Revision of the code
